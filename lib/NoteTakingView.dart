@@ -61,9 +61,38 @@ class NoteTakingViewState extends State<NoteTakingView> {
               )),
         ],
       ),
-      floatingActionButton: FloatingActionButton(onPressed: showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildPopupDialog(context),)
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.download),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => _buildPopupDialog(context),
+          );
+        },
+      ),
     );
   }
+}
+
+Widget _buildPopupDialog(BuildContext context) {
+  return AlertDialog(
+    title: const Text('Specify the Clip Data'),
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      //add 3 input prompts for the user: clip_start, clip_end, clip_title
+      children: const <Widget>[
+        Text("Hello"),
+      ],
+    ),
+    //add 2 buttons "save" and "close" -> save parses the user data to the YoutubeVideoController
+    actions: <Widget>[
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: const Text('Close'),
+      ),
+    ],
+  );
 }
