@@ -1,8 +1,7 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, avoid_print
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:notaria/model/opacity_button.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class NoteTakingView extends StatefulWidget {
@@ -26,8 +25,80 @@ class NoteTakingViewState extends State<NoteTakingView> {
     super.initState();
 
     _noteControllerYT = YoutubePlayerController(
-        initialVideoId: _videoURL,
-        flags: const YoutubePlayerFlags(autoPlay: false, mute: false));
+      initialVideoId: YoutubePlayer.convertUrlToId(_videoURL)!,
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+      ),
+    );
+  }
+
+  Widget _buildPopupDialog(BuildContext context) {
+    TextEditingController clipStart = TextEditingController();
+    TextEditingController clipEnd = TextEditingController();
+    TextEditingController clipTitle = TextEditingController();
+
+    return AlertDialog(
+      title: const Text('Specify the Clip Data'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        //add 3 input prompts for the user: clip_start, clip_end, clip_title
+        children: <Widget>[
+          Column(
+            children: [
+              TextField(
+                decoration: const InputDecoration(
+                  hintText: "Specify Start Time",
+                ),
+                controller: clipStart,
+              ),
+              TextField(
+                decoration: const InputDecoration(
+                  hintText: "Specify End Time",
+                ),
+                controller: clipEnd,
+              ),
+              TextField(
+                decoration: const InputDecoration(
+                  hintText: "Specify Title",
+                ),
+                controller: clipTitle,
+              ),
+            ],
+          ),
+        ],
+      ),
+      //add 2 buttons "save" and "close" -> save parses the user data to the YoutubeVideoController
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            print("$clipStart");
+            print("$clipEnd");
+            //Save the three clip-controllers to the database
+            _noteControllerYT = YoutubePlayerController(
+              initialVideoId: NoteTakingViewState()._videoURL,
+              flags: YoutubePlayerFlags(
+                autoPlay: true,
+                mute: false,
+                startAt: int.parse(clipStart.text),
+                endAt: int.parse(clipEnd.text),
+              ),
+            );
+            setState(() {});
+            Navigator.of(context).pop();
+          },
+          child: const Text('Save'),
+        ),
+        TextButton(
+          onPressed: () {
+            print("Hello");
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
+    );
   }
 
   refresh() {
@@ -48,21 +119,23 @@ class NoteTakingViewState extends State<NoteTakingView> {
         toolbarHeight: -5,
         backgroundColor: Colors.grey[850],
       ),
-      // bottomNavigationBar: markdownEditor(),
-      body: ListView(
+      body: Column(
         children: <Widget>[
           YoutubePlayer(
             controller: _noteControllerYT,
           ),
           SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: TextField(
-                controller: _noteController,
-              )),
+            height: MediaQuery.of(context).size.height - 276,
+            child: TextField(
+              controller: _noteController,
+              maxLines: 9999999,
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.download),
+        backgroundColor: Colors.orange[800],
         onPressed: () {
           showDialog(
             context: context,
@@ -74,25 +147,5 @@ class NoteTakingViewState extends State<NoteTakingView> {
   }
 }
 
-Widget _buildPopupDialog(BuildContext context) {
-  return AlertDialog(
-    title: const Text('Specify the Clip Data'),
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      //add 3 input prompts for the user: clip_start, clip_end, clip_title
-      children: const <Widget>[
-        Text("Hello"),
-      ],
-    ),
-    //add 2 buttons "save" and "close" -> save parses the user data to the YoutubeVideoController
-    actions: <Widget>[
-      TextButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: const Text('Close'),
-      ),
-    ],
-  );
-}
+//integrate this into FloatingActionButtonGroup and include it within the save button
+
