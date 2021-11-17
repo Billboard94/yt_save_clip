@@ -14,33 +14,100 @@ class NoteTakingView extends StatefulWidget {
 }
 
 class NoteTakingViewState extends State<NoteTakingView> {
-  late YoutubePlayerController _noteControllerYT;
-  final String _videoURL =
-      "https://www.youtube.com/watch?v=FQ99-zPBfI0"; //get videoURL from the search page
-
+  late YoutubePlayerController noteControllerYT;
+  final String videoURL =
+      "https://www.youtube.com/watch?v=mIYlLYu2554"; //get videoURL from the search page
   final _noteController = TextEditingController();
+  // bool isPressed = false;
 
   @override
   void initState() {
     super.initState();
 
-    _noteControllerYT = YoutubePlayerController(
-      initialVideoId: YoutubePlayer.convertUrlToId(_videoURL)!,
+    noteControllerYT = YoutubePlayerController(
+      initialVideoId: YoutubePlayer.convertUrlToId(videoURL)!,
       flags: const YoutubePlayerFlags(
         autoPlay: false,
         mute: false,
+        startAt: 25,
       ),
     );
-  }
-
-  refresh() {
-    setState(() {});
   }
 
   @override
   void dispose() {
     _noteController.dispose();
+    // noteControllerYT.dispose();
     super.dispose();
+  }
+
+  Widget buildPopupDialog(BuildContext context) {
+    TextEditingController clipStart = TextEditingController();
+    // TextEditingController clipEnd = TextEditingController();
+    // TextEditingController clipTitle = TextEditingController();
+
+    return AlertDialog(
+      title: const Text('Specify the Clip Data'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Column(
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextField(
+                decoration: const InputDecoration(
+                  hintText: "Specify Start Time",
+                ),
+                controller: clipStart,
+              ),
+              // TextField(
+              //   decoration: const InputDecoration(
+              //     hintText: "Specify End Time",
+              //   ),
+              //   controller: clipEnd,
+              // ),
+              // TextField(
+              //   decoration: const InputDecoration(
+              //     hintText: "Specify Title",
+              //   ),
+              //   controller: clipTitle,
+              // ),
+            ],
+          ),
+        ],
+      ),
+      //add 2 buttons "save" and "close" -> save parses the user data to the YoutubeVideoController
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            // isPressed = true;
+            setState(
+              () {
+                noteControllerYT = YoutubePlayerController(
+                  initialVideoId: YoutubePlayer.convertUrlToId(videoURL)!,
+                  flags: const YoutubePlayerFlags(
+                    autoPlay: false,
+                    mute: false,
+                    startAt: 24,
+                    // endAt: 40,
+                  ),
+                );
+              },
+            );
+            Navigator.of(context).pop();
+          },
+          child: const Text('Save'),
+        ),
+        TextButton(
+          onPressed: () {
+            print("Hello");
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
+    );
   }
 
   @override
@@ -48,19 +115,30 @@ class NoteTakingViewState extends State<NoteTakingView> {
     return Scaffold(
       backgroundColor: Colors.grey[850],
       appBar: AppBar(
-        toolbarHeight: -5,
+        toolbarHeight: 0,
         backgroundColor: Colors.grey[850],
       ),
       body: Column(
         children: <Widget>[
           YoutubePlayer(
-            controller: _noteControllerYT,
-          ),
+              progressColors: const ProgressBarColors(
+                playedColor: Colors.red,
+                handleColor: Colors.redAccent,
+              ),
+              controller: noteControllerYT
+              // = YoutubePlayerController(
+              //   initialVideoId: YoutubePlayer.convertUrlToId(videoURL)!,
+              //   flags: const YoutubePlayerFlags(
+              //     autoPlay: false,
+              //     mute: false,
+              ),
+          // ),
+          // ),
           SizedBox(
             height: MediaQuery.of(context).size.height - 276,
             child: TextField(
               controller: _noteController,
-              maxLines: 9999999,
+              maxLines: null,
             ),
           ),
         ],
@@ -71,7 +149,7 @@ class NoteTakingViewState extends State<NoteTakingView> {
         onPressed: () {
           showDialog(
             context: context,
-            builder: (BuildContext context) => _buildPopupDialog(context),
+            builder: (BuildContext context) => buildPopupDialog(context),
           );
         },
       ),
@@ -80,70 +158,3 @@ class NoteTakingViewState extends State<NoteTakingView> {
 }
 
 //integrate this into FloatingActionButtonGroup and include it within the save button
-Widget _buildPopupDialog(BuildContext context) {
-  TextEditingController clipStart = TextEditingController();
-  TextEditingController clipEnd = TextEditingController();
-  TextEditingController clipTitle = TextEditingController();
-
-  return AlertDialog(
-    title: const Text('Specify the Clip Data'),
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Column(
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            TextField(
-              decoration: const InputDecoration(
-                hintText: "Specify Start Time",
-              ),
-              controller: clipStart,
-            ),
-            // TextField(
-            //   decoration: const InputDecoration(
-            //     hintText: "Specify End Time",
-            //   ),
-            //   controller: clipEnd,
-            // ),
-            // TextField(
-            //   decoration: const InputDecoration(
-            //     hintText: "Specify Title",
-            //   ),
-            //   controller: clipTitle,
-            // ),
-          ],
-        ),
-      ],
-    ),
-    //add 2 buttons "save" and "close" -> save parses the user data to the YoutubeVideoController
-    actions: <Widget>[
-      TextButton(
-        onPressed: () {
-          print("$clipStart");
-          print("$clipEnd");
-          //Save the three clip-controllers to the database
-          NoteTakingViewState()._noteControllerYT = YoutubePlayerController(
-            initialVideoId: NoteTakingViewState()._videoURL,
-            flags: YoutubePlayerFlags(
-              autoPlay: true,
-              mute: false,
-              startAt: int.parse(clipStart.text),
-              endAt: int.parse(clipEnd.text),
-            ),
-          );
-          NoteTakingViewState().refresh;
-          Navigator.of(context).pop();
-        },
-        child: const Text('Save'),
-      ),
-      TextButton(
-        onPressed: () {
-          print("Hello");
-          Navigator.of(context).pop();
-        },
-        child: const Text('Close'),
-      ),
-    ],
-  );
-}
