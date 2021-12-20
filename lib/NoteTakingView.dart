@@ -1,6 +1,5 @@
-// ignore_for_file: file_names, avoid_print
+// ignore_for_file: file_names
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -156,5 +155,3 @@ class NoteTakingViewState extends State<NoteTakingView> {
     );
   }
 }
-
-//integrate this into FloatingActionButtonGroup and include it within the save button
