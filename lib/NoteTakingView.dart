@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -10,7 +10,7 @@ class NoteTakingView extends StatefulWidget {
   State<StatefulWidget> createState() {
     return NoteTakingViewState();
   }
-}
+
 
 class NoteTakingViewState extends State<NoteTakingView> {
   late YoutubePlayerController noteControllerYT;
@@ -28,7 +28,7 @@ class NoteTakingViewState extends State<NoteTakingView> {
       flags: const YoutubePlayerFlags(
         autoPlay: false,
         mute: false,
-        startAt: 25,
+        // startAt: 25,
       ),
     );
   }
@@ -92,6 +92,7 @@ class NoteTakingViewState extends State<NoteTakingView> {
                     // endAt: 40,
                   ),
                 );
+                noteControllerYT.seekTo(const Duration(seconds: 24));
               },
             );
             Navigator.of(context).pop();
