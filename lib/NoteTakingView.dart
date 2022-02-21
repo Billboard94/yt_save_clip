@@ -81,19 +81,8 @@ class NoteTakingViewState extends State<NoteTakingView> {
         TextButton(
           onPressed: () {
             // isPressed = true;
-            setState(
-              () {
-                noteControllerYT = YoutubePlayerController(
-                  initialVideoId: YoutubePlayer.convertUrlToId(videoURL)!,
-                  flags: const YoutubePlayerFlags(
-                    autoPlay: false,
-                    mute: false,
-                    startAt: 24,
-                    // endAt: 40,
-                  ),
-                );
-                noteControllerYT.seekTo(const Duration(seconds: 24));
-              },
+            noteControllerYT.seekTo(
+              const Duration(seconds: 34),
             );
             Navigator.of(context).pop();
           },
@@ -101,7 +90,6 @@ class NoteTakingViewState extends State<NoteTakingView> {
         ),
         TextButton(
           onPressed: () {
-            print("Hello");
             Navigator.of(context).pop();
           },
           child: const Text('Close'),
