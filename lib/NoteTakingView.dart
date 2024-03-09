@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -10,7 +10,7 @@ class NoteTakingView extends StatefulWidget {
   State<StatefulWidget> createState() {
     return NoteTakingViewState();
   }
-}
+
 
 class NoteTakingViewState extends State<NoteTakingView> {
   late YoutubePlayerController noteControllerYT;
