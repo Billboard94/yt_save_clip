@@ -28,7 +28,7 @@ class NoteTakingViewState extends State<NoteTakingView> {
       flags: const YoutubePlayerFlags(
         autoPlay: false,
         mute: false,
-        startAt: 25,
+        // startAt: 25,
       ),
     );
   }
@@ -82,7 +82,7 @@ class NoteTakingViewState extends State<NoteTakingView> {
           onPressed: () {
             // isPressed = true;
             noteControllerYT.seekTo(
-              const Duration(seconds: 34),
+              Duration(seconds: int.parse(clipStart.text)),
             );
             Navigator.of(context).pop();
           },
@@ -123,7 +123,7 @@ class NoteTakingViewState extends State<NoteTakingView> {
           // ),
           // ),
           SizedBox(
-            height: MediaQuery.of(context).size.height - 276,
+            height: MediaQuery.of(context).size.height - 301,
             child: TextField(
               controller: _noteController,
               maxLines: null,
